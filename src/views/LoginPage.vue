@@ -1,3 +1,36 @@
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
+const APIurl = 'https://todolist-api.hexschool.io'
+const userDatasSingIn = ref({
+  email: '',
+  password: ''
+})
+const signinResMes = ref('')
+const checkLoginData = ref({
+  Authorization: ''
+})
+const todoSignIn = () => {
+  fetch(`${APIurl}/users/sign_in`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(userDatasSingIn.value)
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data)
+      signinResMes.value = data
+      checkLoginData.value.Authorization = data.token
+      document.cookie = `token=${checkLoginData.value.Authorization}`
+      console.log(checkLoginData.value.Authorization)
+      router.push('/TodoPage')
+    })
+    .catch((error) => console.error('Error:', error))
+}
+</script>
 <template>
   <!-- login_page -->
   <div id="loginPage" class="bg-yellow">
@@ -25,6 +58,7 @@
             id="email"
             name="email"
             placeholder="請輸入 email"
+            v-model="userDatasSingIn.email"
             required
           />
           <span>此欄位不可留空</span>
@@ -35,15 +69,12 @@
             name="pwd"
             id="pwd"
             placeholder="請輸入密碼"
+            v-model="userDatasSingIn.password"
             required
           />
-          <input
-            class="formControls_btnSubmit"
-            type="button"
-            onclick="javascript:location.href='#todoListPage'"
-            value="登入"
-          />
-          <a class="formControls_btnLink" href="#signUpPage">註冊帳號</a>
+
+          <input class="formControls_btnSubmit" type="button" @click="todoSignIn" value="登入" />
+          <RouterLink to="signUpPage"><a class="formControls_btnLink"> 註冊帳號</a></RouterLink>
         </form>
       </div>
     </div>

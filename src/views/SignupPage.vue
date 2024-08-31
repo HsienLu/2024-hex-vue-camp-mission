@@ -7,20 +7,30 @@ const regData = ref({
   pwd: '',
   pwd2: ''
 })
-const doSignUp = () => {
-  console.log(regData.value)
+const userDatas = ref({
+  email: '',
+  password: '',
+  nickname: ''
+})
+const todoSignUp = () => {
   fetch(`${APIurl}/users/sign_up`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(regData.value)
+    body: JSON.stringify(userDatas.value)
   })
-    .then((res) => res.json())
+    .then((response) => response.json())
     .then((data) => {
+      // signupResMes.value = data
       console.log(data)
+      console.log(data.message)
+      if (data.message === '用戶已存在') {
+        alert('用戶已存在')
+        return
+      }
     })
-    .catch((err) => console.log(err))
+    .catch((error) => console.error('Error:', error))
 }
 </script>
 <template>
@@ -45,7 +55,7 @@ const doSignUp = () => {
           <h2 class="formControls_txt">註冊帳號</h2>
           <label class="formControls_label" for="email">Email</label>
           <input
-            v-model="regData.email"
+            v-model="userDatas.email"
             class="formControls_input"
             type="text"
             id="email"
@@ -55,7 +65,7 @@ const doSignUp = () => {
           />
           <label class="formControls_label" for="name">您的暱稱</label>
           <input
-            v-model="regData.name"
+            v-model="userDatas.nickname"
             class="formControls_input"
             type="text"
             name="name"
@@ -64,7 +74,7 @@ const doSignUp = () => {
           />
           <label class="formControls_label" for="pwd">密碼</label>
           <input
-            v-model="regData.pwd"
+            v-model="userDatas.password"
             class="formControls_input"
             type="password"
             name="pwd"
@@ -82,7 +92,12 @@ const doSignUp = () => {
             placeholder="請再次輸入密碼"
             required
           />
-          <input class="formControls_btnSubmit" type="button" @click="doSignUp" value="註冊帳號" />
+          <input
+            class="formControls_btnSubmit"
+            type="button"
+            @click="todoSignUp"
+            value="註冊帳號"
+          />
           <a class="formControls_btnLink" href="#loginPage">登入</a>
         </form>
       </div>
