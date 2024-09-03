@@ -1,7 +1,11 @@
 <script setup>
+import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useNameStore } from '@/stores/name'
 const router = useRouter()
+const nameStore = useNameStore()
+const { name } = storeToRefs(nameStore)
 const APIurl = 'https://todolist-api.hexschool.io'
 const userDatasSingIn = ref({
   email: '',
@@ -22,9 +26,13 @@ const todoSignIn = () => {
     .then((response) => response.json())
     .then((data) => {
       console.log(data)
+      if (!data.status) {
+        return alert(data.message)
+      }
       signinResMes.value = data
       checkLoginData.value.Authorization = data.token
-      document.cookie = `token=${checkLoginData.value.Authorization}`
+      document.cookie = `hexToken=${checkLoginData.value.Authorization}`
+      name.value = data.nickname
       console.log(checkLoginData.value.Authorization)
       router.push('/TodoPage')
     })
@@ -61,7 +69,7 @@ const todoSignIn = () => {
             v-model="userDatasSingIn.email"
             required
           />
-          <span>此欄位不可留空</span>
+
           <label class="formControls_label" for="pwd">密碼</label>
           <input
             class="formControls_input"

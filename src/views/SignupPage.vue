@@ -1,4 +1,5 @@
 <script setup>
+import router from '@/router'
 import { ref } from 'vue'
 const APIurl = 'https://todolist-api.hexschool.io'
 const regData = ref({
@@ -29,6 +30,7 @@ const todoSignUp = () => {
         alert('用戶已存在')
         return
       }
+      router.push('/LoginPage')
     })
     .catch((error) => console.error('Error:', error))
 }
