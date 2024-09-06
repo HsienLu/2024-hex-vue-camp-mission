@@ -21,9 +21,9 @@ const newTodo = ref({
 const isTodoList = ref(false)
 const filterStatus = ref('全部')
 const todoDoneCount = computed(() => {
-  return todosData.value.filter((todo) => todo.status).length
+  return todosData.value.filter((todo) => !todo.status).length
 })
-
+console.log(todosData.value)
 //讀取
 const getTodos = () => {
   fetch(`${APIurl}/todos`, {
@@ -219,7 +219,7 @@ onMounted(() => {
               </li>
             </ul>
             <div class="todoList_statistics">
-              <p>{{ todoDoneCount }} 個已完成項目</p>
+              <p>{{ todoDoneCount }} 個待完成項目</p>
             </div>
           </div>
         </div>
